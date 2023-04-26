@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import logo from "./starwars.svg";
+import CardGrid from "./components/CardGrid";
 
 const Movies = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
+  const [data, setData] = useState([]); // you know the type of data you are expecting which is an array
 
   useEffect(() => {
     fetch(`https://swapi.dev/api/films`)
@@ -35,40 +37,15 @@ const Movies = () => {
       <div className="logo-div">
         <img src={logo} alt="star wars logo" className="logo" />
       </div>
-      {loading && 
+      {loading ? 
         <div>
-          Data is loading. Please wait...
           <div className="logo-display">
             <img src={logo} alt="logo" />
           </div>
-        </div>
+        </div> : data.length > 0 ? <CardGrid data={data}/> : "No movies"
       }
       {error && <div>{`There is a problem fetching your data - ${error}`}</div>}
-      <div className="movie-grid">
-        {data &&
-          data.map((items) => {
-            return (
-              <div key={items.title} className="movie">
-                <a href="/#" className="title-link">
-                  {items.title}
-                </a>
-                <p className="date">
-                  {new Date(items.release_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </p>
-                <p className="opening-crawl">
-                  {items.opening_crawl.split(" ").splice(0, 33).join(" ")}...
-                </p>
-                <a className="more-info" href="/#">
-                  More Info
-                </a>
-              </div>
-            );
-          })}
-      </div>
+   
     </div>
   );
 };
